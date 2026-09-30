@@ -1,0 +1,23 @@
+{
+  "name": "documentdb-migration-game-day",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Keep your application. Prove the move. A supervised, offline MongoDB to Azure DocumentDB rehearsal.",
+  "engines": { "node": ">=24.13.0" },
+  "scripts": {
+    "start": "node src/main.js",
+    "test": "node --test checks/*.case.js",
+    "test:browser": "node checks/browser.js",
+    "test:live": "node checks/live.js",
+    "test:live:remote": "node checks/live-remote.js",
+    "release:check": "node scripts/export-standalone.js --check",
+    "release:export": "node scripts/export-standalone.js"
+  },
+  "dependencies": {
+    "@azure/identity": "4.13.2",
+    "mongodb": "7.6.0"
+  },
+  "devDependencies": { "playwright": "1.63.0" }
+}

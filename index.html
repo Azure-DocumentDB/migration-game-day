@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migration game day | Keep your application. Prove the move.</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--cp-bg); color: var(--cp-text); font: 15px/1.55 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+main { max-width: 1240px; margin: auto; padding: 32px; }
+header { display: flex; justify-content: space-between; gap: 24px; align-items: center; margin-bottom: 24px; }
+h1 { font-size: clamp(28px,4vw,44px); line-height: 1.12; letter-spacing: -1px; margin: 12px 0; }
+h2 { font-size: 18px; margin: 0 0 12px; }
+h3 { margin: 0 0 8px; font-size: 15px; }
+p { margin: 8px 0; }
+.eyebrow { color: var(--cp-accent); text-transform: uppercase; font-weight: 700; font-size: 12px; letter-spacing: 2px; }
+.muted, small { color: var(--cp-text-muted); }
+.mono { font-family: Consolas, "Courier New", Courier, monospace; font-size: 12px; overflow-wrap: anywhere; }
+.badge { display: inline-block; background: var(--cp-accent-soft); color: var(--cp-accent); padding: 4px 12px; border: 1px solid var(--cp-border); border-radius: .625rem; font-weight: 600; white-space: nowrap; }
+.notice { padding: 12px 16px; border: 1px solid var(--cp-border-strong); background: var(--cp-bg-elevated); border-radius: .625rem; margin-bottom: 20px; }
+.grid { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+.card { background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 16px; padding: 24px; min-width: 0; }
+.full { grid-column: 1/-1; }
+.sections { margin: 16px 0; }
+.pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: start; }
+.arrow { color: var(--cp-accent); font-size: 24px; align-self: center; }
+.metric { font-size: 28px; font-weight: 600; margin: 8px 0; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; align-items: center; }
+button, input { font: inherit; border-radius: .625rem; padding: 8px 12px; border: 1px solid var(--cp-border-strong); background: var(--cp-surface); color: var(--cp-text); }
+button { cursor: pointer; font-weight: 600; }
+button:hover:not(:disabled) { background: var(--cp-accent-soft); border-color: var(--cp-accent); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 3px; }
+button.primary { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); }
+button.primary:hover:not(:disabled) { background: var(--cp-accent-hover); }
+button:disabled { opacity: .5; cursor: not-allowed; }
+button.danger { color: var(--cp-danger); }
+.status { padding: 4px 0; font-weight: 600; }
+.pass { color: var(--cp-success); }
+.fail, #error { color: var(--cp-danger); }
+.steps { display: grid; grid-template-columns: repeat(6,1fr); gap: 8px; list-style: none; padding: 0; }
+.steps li { border-top: 3px solid var(--cp-border); padding-top: 8px; font-size: 13px; }
+.steps li.current { border-color: var(--cp-accent); color: var(--cp-accent); font-weight: 700; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { border-bottom: 1px solid var(--cp-border); text-align: left; padding: 8px; overflow-wrap: anywhere; }
+th { color: var(--cp-text-muted); font-weight: 600; }
+ul { padding-left: 20px; }
+#error[hidden] { display: none; }
+#error { border-left: 4px solid var(--cp-danger); }
+.scroll { overflow-x: auto; }
+#confirmation { flex: 1; min-width: 200px; }
+footer { font-size: 12px; color: var(--cp-text-muted); margin: 24px 0; }
+@media (max-width: 760px) {
+  main { padding: 16px; }
+  header { align-items: start; flex-direction: column; gap: 8px; }
+  .grid { grid-template-columns: 1fr; }
+  .card { padding: 16px; }
+  .pair { grid-template-columns: 1fr; gap: 8px; }
+  .arrow { display: none; }
+  .steps { grid-template-columns: repeat(3,1fr); }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div><div class="eyebrow">Migration / game day</div><h1>Keep your application.<br>Prove the move.</h1><p class="muted">A small orders app. Two databases. Evidence before cutover.</p></div>
+    <span class="badge">OFFLINE REHEARSAL</span>
+  </header>
+  <div id="provenance" class="notice" role="status">Connecting to the local controller. No database execution claimed.</div>
+  <div id="error" class="notice" role="alert" hidden></div>
+  <section class="card">
+    <div class="toolbar"><h2>Run control</h2><button id="refresh">Refresh evidence</button><button id="cancel" class="danger">Cancel current operation</button></div>
+    <div id="run-id" class="mono">No run allocated.</div>
+    <div id="run-meta" class="muted"></div>
+    <ol class="steps"><li>1 / Seed</li><li>2 / Assess</li><li>3 / Fence</li><li>4 / Copy</li><li>5 / Prove</li><li>6 / Cut over</li></ol>
+    <div class="toolbar">
+      <button data-action="new-run" class="primary">New rehearsal</button><button data-action="seed">Seed synthetic data</button>
+      <button data-action="assess">Assess workload</button><button data-action="freeze">Fence source writes</button>
+      <button data-action="copy">Run native copy</button><button data-action="reconcile" class="primary">Reconcile both databases</button>
+    </div>
+  </section>
+  <div class="grid sections">
+    <section class="card full">
+      <div class="pair">
+        <div><div class="eyebrow">Source</div><h2>MongoDB Community</h2><div id="source-counts" class="metric">Not observed</div><div id="source-version" class="muted">Version unknown</div><div id="fence" class="status">Write fence not observed</div></div>
+        <div class="arrow" aria-hidden="true">&#8594;</div>
+        <div><div class="eyebrow">Target</div><h2>Azure DocumentDB</h2><div id="target-counts" class="metric">Not observed</div><div id="target-version" class="muted">Version unknown</div><div id="migration" class="status">Copy not started</div></div>
+      </div>
+      <p class="muted">Native BSON dump/restore. Catch-up is not applicable to this offline lane. The source stays fenced until a deliberate safe return or cleanup.</p>
+    </section>
+    <section class="card">
+      <h2>Cutover readiness</h2><div id="readiness" class="status">BLOCKED</div><ul id="blockers"><li>Start an attributed rehearsal.</li></ul>
+      <div class="toolbar"><button data-action="cutover" id="cutover" class="primary" disabled>Cut over reads</button><button data-action="rollback">Return to source</button></div>
+      <p id="rollback-boundary" class="muted">Return-to-source requires fresh equality and no target-only write attempt. Changing a URI after target writes is not rollback.</p>
+    </section>
+    <section class="card">
+      <h2>Make it fail. Prove the recovery.</h2>
+      <p>Change one attributed target inventory quantity. Counts remain equal, but full BSON comparison must fail.</p>
+      <div class="toolbar"><button data-action="fault">Inject +1 quantity mismatch</button><button data-action="repair">Repair exact injected mismatch</button><button data-action="recover">Reconcile uncertain operation</button></div>
+      <p id="fault-state" class="muted">No deliberate mismatch recorded.</p>
+    </section>
+    <section class="card full">
+      <h2>Reconciliation evidence</h2><p id="coverage" class="muted">No successful comparison yet. Counts alone never prove correctness.</p>
+      <div class="scroll"><table><thead><tr><th>Check</th><th>Result</th></tr></thead><tbody id="checks"></tbody></table></div>
+      <details><summary>What this does not prove</summary><p id="excluded" class="muted">Universal MongoDB compatibility, performance, failover, online catch-up, or zero downtime/data loss.</p></details>
+    </section>
+    <section class="card full">
+      <div class="toolbar"><h2>Same orders / inventory application</h2><span id="route" class="badge">Source</span><button data-action="order" id="place-order">Place a synthetic order</button><button id="load-app">Read application</button></div>
+      <p class="muted">The same MongoDB driver transaction reserves two PART-001 units and inserts an order. On target, pressing this button crosses the one-way rollback boundary before the write is attempted.</p>
+      <div class="grid"><div class="scroll"><h3>Inventory</h3><table><thead><tr><th>SKU</th><th>Available</th><th>Price</th></tr></thead><tbody id="inventory"><tr><td colspan="3">Not observed</td></tr></tbody></table></div>
+      <div class="scroll"><h3>Orders</h3><table><thead><tr><th>Order</th><th>Status</th><th>Total</th></tr></thead><tbody id="orders"><tr><td colspan="3">Not observed</td></tr></tbody></table></div></div>
+      <p id="app-observation" class="mono">Application queries have not run.</p>
+    </section>
+    <section class="card">
+      <h2>Durable operation log</h2><div class="scroll"><table><thead><tr><th>Operation</th><th>Outcome</th></tr></thead><tbody id="events"></tbody></table></div>
+    </section>
+    <section class="card">
+      <h2>Exact-data cleanup</h2><p>No database, cluster, or resource-group deletion. Remove only documents whose run ID and ownership nonce match the independently read marker.</p>
+      <label for="confirmation">Type the displayed run ID</label><div class="toolbar"><input id="confirmation" autocomplete="off" placeholder="Exact run ID"><button data-action="reset-target">Reset attributed target data</button><button data-action="cleanup" class="danger">Clean this run's data</button></div>
+      <p id="retention" class="muted"></p>
+    </section>
+  </div>
+  <footer>Supervised demo, not a production migration controller. SQLite records intent and evidence; they do not make cloud operations true. New resources require separately approved provisioning. No automatic cloud cleanup or scheduling.</footer>
+</main>
+<script>
+const token = '__REQUEST_TOKEN__';
+const byId = id => document.getElementById(id);
+let state;
+let pending = false;
+async function api(path, body) {
+  const response = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Game-Day-Token': token }, body: JSON.stringify(body) } : {});
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error.code + ': ' + data.error.message);
+  return data;
+}
+function error(message) { byId('error').hidden = !message; byId('error').textContent = message || ''; }
+function rows(id, values) {
+  const fragment = document.createDocumentFragment();
+  for (const valuesInRow of values) {
+    const row = document.createElement('tr');
+    for (const value of valuesInRow) { const cell = document.createElement('td'); cell.textContent = value; row.append(cell); }
+    fragment.append(row);
+  }
+  byId(id).replaceChildren(fragment);
+}
+function draw() {
+  const run = state.run;
+  byId('provenance').textContent = state.evidenceTier === 'unit-test-double'
+    ? 'OFFLINE TEST DOUBLES - UI and lifecycle checks only. No real database or Azure execution.'
+    : 'REAL DATABASE ADAPTERS - only timestamped observations below are evidence. Offline migration; no catch-up.';
+  byId('run-id').textContent = run ? 'Run ' + run.id + ' | ' + run.database : 'No run allocated.';
+  byId('run-meta').textContent = 'Rehearsals: ' + state.usage.used + ' / ' + state.usage.limit + (run ? ' | State: ' + run.phase + ' | Testing deadline: ' + run.deadline + (state.busy ? ' | Running: ' + state.busy : '') : '');
+  byId('source-version').textContent = run?.versions ? 'MongoDB ' + run.versions.source + ' | ' + run.versions.driver : 'Version unknown';
+  byId('target-version').textContent = run?.versions ? 'Azure DocumentDB reported ' + run.versions.target + ' | ' + run.versions.driver : 'Version unknown';
+  for (const side of ['source', 'target']) {
+    const evidence = run?.evidence?.[side];
+    byId(side + '-counts').textContent = evidence ? evidence.orders.count + ' orders / ' + evidence.inventory.count + ' products' : 'Not reconciled';
+  }
+  byId('fence').textContent = run?.fence ? 'Fence observed at ' + run.fence.observedAt + ' (rechecked before cutover)' : 'Write fence not observed';
+  byId('migration').textContent = 'Native copy: ' + (run?.migration.status || 'not-started');
+  byId('readiness').textContent = state.readiness.ready ? 'READY - fresh observation still required at cutover' : 'BLOCKED';
+  byId('readiness').className = 'status ' + (state.readiness.ready ? 'pass' : 'fail');
+  byId('blockers').replaceChildren(...state.readiness.reasons.map(reason => { const li = document.createElement('li'); li.textContent = reason; return li; }));
+  byId('fault-state').textContent = run?.fault ? 'Deliberate target mismatch is active.' : 'No active deliberate mismatch.';
+  byId('route').textContent = run?.route === 'target' ? 'Target' : 'Source';
+  byId('rollback-boundary').textContent = run?.targetDiverged
+    ? 'RETURN TO SOURCE BLOCKED: a target-only write was attempted. A separate reverse reconciliation process is required.'
+    : 'Return-to-source requires fresh equality and no target-only write attempt. Changing a URI after target writes is not rollback.';
+  byId('coverage').textContent = run?.evidence ? run.evidence.coverage + ' Observed ' + run.evidence.observedAt : 'No current comparison. Counts alone never prove correctness.';
+  byId('excluded').textContent = run?.evidence?.excluded.join('; ') || 'Universal compatibility, performance, failover, online catch-up, and production workload behavior are not tested.';
+  rows('checks', (run?.evidence?.checks || []).map(check => [check.name, check.pass ? 'PASS' : 'FAIL']));
+  rows('events', state.events.slice(0,12).map(event => [event.kind, event.outcome + (event.details.code ? ' / ' + event.details.code : '')]));
+  byId('retention').textContent = 'Resources retained until ' + state.retention.resourcesUntil + '. Owner: ' + state.retention.owner + '. Private evidence until ' + state.retention.evidenceUntil + '. Cloud deletion requires separate confirmation.';
+  document.querySelectorAll('[data-action]').forEach(button => {
+    button.disabled = pending || !!state.busy || (!run && button.dataset.action !== 'new-run');
+  });
+  byId('cutover').disabled = pending || !!state.busy || !state.readiness.ready || run?.route !== 'source';
+  byId('cancel').disabled = !pending && !state.busy;
+  byId('refresh').disabled = pending;
+  byId('load-app').disabled = pending || !!state.busy || !run || !!run.pending || ['new','cleaned'].includes(run.phase);
+  const stage = !run || run.phase === 'new' ? 0 : ['seeded','source-active'].includes(run.phase) ? 1 : run.phase === 'frozen' ? 3 : run.route === 'target' ? 5 : 4;
+  document.querySelectorAll('.steps li').forEach((li,index) => li.classList.toggle('current', index === stage));
+}
+async function refresh() {
+  state = await api('/api/state'); draw();
+}
+async function act(action) {
+  error(''); pending = true; draw();
+  if (['new-run','seed','order','cutover','rollback','fault','repair','reset-target','cleanup'].includes(action)) {
+    rows('inventory', [['Not currently observed']]); rows('orders', [['Not currently observed']]);
+    byId('app-observation').textContent = 'Previous application view invalidated. Read application again after this operation settles.';
+  }
+  try {
+    await api('/api/action', { action, ...(['cleanup','reset-target'].includes(action) ? { confirmRunId: byId('confirmation').value.trim() } : {}) });
+  } catch (failure) { error(failure.message); }
+  finally { pending = false; await refresh().catch(failure => error(failure.message)); }
+}
+document.querySelectorAll('[data-action]').forEach(button => button.addEventListener('click', () => act(button.dataset.action)));
+byId('refresh').addEventListener('click', () => refresh().catch(failure => error(failure.message)));
+byId('cancel').addEventListener('click', () => api('/api/cancel', {}).catch(failure => error(failure.message)));
+byId('load-app').addEventListener('click', async () => {
+  try {
+    const app = await api('/api/application');
+    rows('inventory', app.inventory.map(item => [item.sku, item.quantity, '$' + item.price]));
+    rows('orders', app.orders.map(item => [item.number, item.status, '$' + item.total]));
+    byId('app-observation').textContent = 'Read from ' + app.route + ' at ' + app.observedAt + ' | Known-answer queries: ' + (app.applicationChecks ? 'PASS' : 'FAIL');
+    error('');
+  } catch (failure) {
+    rows('inventory', [['Unavailable']]); rows('orders', [['Unavailable']]); error(failure.message);
+  }
+});
+refresh().catch(failure => error(failure.message));
+setInterval(() => { if (!pending) refresh().catch(failure => error(failure.message)); }, 5000);
+</script>
+</body>
+</html>

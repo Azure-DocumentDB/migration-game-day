@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "port": 4193,
+  "azure": {
+    "subscriptionId": "<approved-subscription-uuid>",
+    "tenantId": "<approved-tenant-uuid>",
+    "principalId": "<approved-principal-object-uuid>",
+    "authentication": "managed-identity",
+    "resourceGroup": "<approved-existing-resource-group>",
+    "environmentName": "<new-attributed-environment-name>",
+    "location": "<approved-region>",
+    "sourceVmId": "<exact-new-vm-resource-id>",
+    "targetId": "<exact-new-mongoClusters-resource-id>",
+    "clientIpv4": "<approved-current-public-IPv4>",
+    "approvedNsgRulesHash": "<digest-of-independently-read-and-approved-complete-NSG-rules>"
+  },
+  "source": {
+    "replicaSet": "game_day",
+    "appUri": "<private-authenticated-loopback-SSH-tunnel-URI>",
+    "observerUri": "<private-read-only-loopback-URI>",
+    "operatorUri": "<private-source-fence-operator-URI>"
+  },
+  "target": {
+    "host": "<ARM-observed-managed-DocumentDB-host>",
+    "appUri": "<private-managed-DocumentDB-TLS-URI>",
+    "observerUri": "<private-read-only-managed-DocumentDB-TLS-URI>"
+  },
+  "tools": {
+    "dump": { "path": "<absolute-verified-mongodump-path>", "sha256": "<verified-binary-SHA-256>" },
+    "restore": { "path": "<absolute-verified-mongorestore-path>", "sha256": "<verified-binary-SHA-256>" }
+  },
+  "approval": {
+    "reference": "<explicit-human-approval-reference>",
+    "startsAt": "<UTC-execution-start>",
+    "expiresAt": "<UTC-execution-expiry-at-most-24-hours-later>",
+    "retainResourcesUntil": "<UTC-resource-retention-deadline>",
+    "retainEvidenceUntil": "<UTC-private-evidence-retention-deadline>",
+    "owner": "<responsible-retention-and-cleanup-owner>"
+  }
+}
